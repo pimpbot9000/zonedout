@@ -5,10 +5,14 @@
         <title>ZonedOut</title>
     </head>
     <body>
+        
+        <header th:replace="fragments/header :: header">
+            <p>header with links etc</p>
+        </header>
 
         <h2>ZonedOut</h2> 
         
-        <p>Add content</p>
+        <p>Hello <span th:text="${userAccount.firstname}">Firstname</span></p>
 
     </body>
 </html>

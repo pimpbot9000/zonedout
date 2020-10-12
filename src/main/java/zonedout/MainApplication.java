@@ -8,16 +8,19 @@ import org.apache.http.impl.client.HttpClients;
 import org.apache.http.ssl.TrustStrategy;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.builder.SpringApplicationBuilder;
+import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.client.RestTemplate;
 
 @SpringBootApplication
 public class MainApplication {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) {        
         SpringApplication.run(MainApplication.class, args);
-    }
+    }   
 
     @Bean
     public RestTemplate restTemplate() throws Throwable {
@@ -46,3 +49,5 @@ public class MainApplication {
 
     }
 }
+//salasana swordfish
+//INSERT INTO USER_ACCOUNT (ID, USERNAME, PASSWORD) VALUES (12, 'tumppu', '$2a$10$HQsdLdlaouISzJ9hfccKEu.byItPUQW.9TOh9CqR0hpsCrVZFDSIS')
