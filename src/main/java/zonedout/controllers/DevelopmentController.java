@@ -11,6 +11,7 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.ResponseBody;
 import zonedout.models.IMyQuery;
 import zonedout.models.UserAccount;
 import zonedout.repositories.CustomQueryRepo;
@@ -21,7 +22,7 @@ import zonedout.repositories.UserAccountRepository;
  * @author tvali
  */
 @Controller
-@Profile("dev")
+@Profile({"production", "dev"})
 public class DevelopmentController {
 
     @Autowired
@@ -56,6 +57,7 @@ public class DevelopmentController {
     }
 
     @GetMapping("/dev/test")
+    @ResponseBody
     public String test(){
         List<IMyQuery> res = custom.getWithFriends();
         
