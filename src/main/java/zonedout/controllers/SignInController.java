@@ -6,7 +6,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import zonedout.model.UserAccount;
+import zonedout.models.UserAccount;
 import zonedout.services.UserAccountService;
 
 /**
@@ -27,7 +27,7 @@ public class SignInController {
 
         if (error != null && error.equals("userexists")) {
             
-            model.addAttribute("errorMessage", "Username already exists");
+            model.addAttribute("errorMessage", "Username \""+ username +"\" already exists");            
             
         } else if (error != null && error.equals("passwordmismatch"))  {
             
@@ -42,6 +42,8 @@ public class SignInController {
     @PostMapping("/signin")
     public String addAccount(
             @RequestParam String username,
+            @RequestParam String firstname,
+            @RequestParam String lastname,
             @RequestParam String password1,
             @RequestParam String password2) {
 
@@ -50,10 +52,10 @@ public class SignInController {
         }
 
         if (userAccountService.userExists(username)) {
-            return "redirect:/signin?error=userexists";
+            return "redirect:/signin?error=userexists&username=" + username;
         }
 
-        UserAccount u = userAccountService.createUser(username, password1, "[etunimi]", "[sukunimi]");
+        UserAccount u = userAccountService.createUser(username, password1, firstname, lastname);
 
         return "redirect:/";
     }

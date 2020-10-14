@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+    <head th:replace="fragments/general.html :: head">
+        <title>Title</title>
+    </head>
+    <body>
+        <nav th:replace="fragments/general.html :: navbar"></nav>
+
+        <div class="container">
+            <h2><span th:text="${userAccount.firstname}">Firstname</span> <span th:text="${userAccount.lastname}">Firstname</span></h2>
+
+            <p>
+                <img th:if="${userAccount.profileImage}" th:src="@{/profileimages/{username}/content(username=${userAccount.username})}" class="img-thumbnail" style="max-height: 300px;"/>                
+            </p>            
+
+            <h4>Bio</h4>
+            <p th:text="${userAccount.bio}">bio</p>
+
+            <h4>Contacts</h4>
+
+            <!--<div class="card" th:each="contact : ${userAccount.contacts}">
+
+                <img class="card-img-top" th:if="${userAccount.profileImage}" th:src="@{/profileimages/{username}/content(username=${contact.username})}" style="max-height: 200px;"/>             
+
+                <div class="card-body">
+                    <h5 class="card-title">><span th:text="${contact.firstname}"></span> <span th:text="${contact.lastname}"></span></h5>
+                    <p class="card-text" th:text="${contact.bio}"></p>
+                </div>
+
+            </div>-->
+            <div class="row">
+                <div class="col-xs-12 col-sm-6 col-md-4" th:each="contact : ${userAccount.contacts}">
+                    <div class="card">
+                        <div class="card-body text-center">
+                            <p><img class="img-fluid" th:src="@{/profileimages/{username}/content(username=${contact.username})}" alt="card image" style="max-height: 200px;"/></p>
+                            <h4 class="card-title"><span th:text="${contact.firstname}"></span> <span th:text="${contact.lastname}"></span></h4>
+                            <p class="card-text" th:text="${contact.bio}">This is basic card with image on top, title, description and button.</p>                            
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+
+
+
+
+        <th:block th:replace="fragments/general.html :: bootstrapscripts"></th:block>
+    </body>
+</html>

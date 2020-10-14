@@ -6,13 +6,13 @@
 package zonedout.repositories;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import zonedout.models.UserAccount;
+import zonedout.models.ProfileImage;
+
 
 /**
  *
  * @author tvali
  */
-public interface UserAccountRepository extends JpaRepository<UserAccount, Long> {
-    UserAccount findByUsername(String username);
+public interface ProfileImageRepository extends JpaRepository<ProfileImage, Long> {
+    
 }
-
