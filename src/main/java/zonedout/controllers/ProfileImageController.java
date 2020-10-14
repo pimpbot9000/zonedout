@@ -75,14 +75,14 @@ public class ProfileImageController {
      * @param username
      * @return
      */
-    @Transactional
+    //@Transactional
     @GetMapping(path = "/profileimages/{username}/content", produces = "image/png")
     @ResponseBody
     
     public byte[] get(@PathVariable String username) {
         return userAccountService.getUserAccount(username).getProfileImage().getContent();
     }
-    @Transactional
+    //@Transactional
     @PostMapping("/profileimages")
     public String save(@RequestParam("file") MultipartFile file, Authentication authentication) throws IOException {
 
@@ -97,10 +97,10 @@ public class ProfileImageController {
         }
 
         profileImage.setContent(file.getBytes());
-        //profileImageRepo.save(profileImage);
+        profileImageRepo.save(profileImage);
 
         account.setProfileImage(profileImage);
-        //userAccountRepo.save(account);
+        userAccountRepo.save(account);
 
         return "redirect:/myprofile";
     }
