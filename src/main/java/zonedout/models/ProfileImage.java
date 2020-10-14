@@ -29,8 +29,8 @@ import org.springframework.data.jpa.domain.AbstractPersistable;
 public class ProfileImage extends AbstractPersistable<Long>{
     
     //@Lob
-    @Basic(fetch = FetchType.EAGER)
-    @Column(name = "content", columnDefinition="clob")
+    //@Basic(fetch = FetchType.EAGER)
+    //@Column(name = "content", columnDefinition="clob")
     //@Type(type = "org.hibernate.type.ImageType")
     private byte[] content;
     
