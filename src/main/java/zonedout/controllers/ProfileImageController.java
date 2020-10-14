@@ -7,6 +7,7 @@ package zonedout.controllers;
 
 import java.io.IOException;
 import java.util.List;
+import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -76,6 +77,7 @@ public class ProfileImageController {
      */
     @GetMapping(path = "/profileimages/{username}/content", produces = "image/png")
     @ResponseBody
+    @Transactional
     public byte[] get(@PathVariable String username) {
         return userAccountService.getUserAccount(username).getProfileImage().getContent();
     }
