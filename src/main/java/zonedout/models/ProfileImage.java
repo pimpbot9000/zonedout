@@ -31,6 +31,7 @@ public class ProfileImage extends AbstractPersistable<Long>{
     @Lob
     @Basic(fetch = FetchType.LAZY)
     //@Column(name = "content", columnDefinition="clob")
+    
     @Type(type = "org.hibernate.type.BinaryType")
     
     private byte[] content;
