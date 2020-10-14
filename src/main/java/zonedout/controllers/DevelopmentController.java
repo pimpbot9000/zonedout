@@ -59,9 +59,9 @@ public class DevelopmentController {
     public String test(){
         List<IMyQuery> res = custom.getWithFriends();
         
-        for( IMyQuery item : res){
-            System.out.println("" + item.getUsername() + " " + item.getId() + " " + item.getContactsId());
-        }
-        return "redirect:/home";
+        //for( IMyQuery item : res){
+        //    System.out.println("" + item.getUsername() + " " + item.getId() + " " + item.getContactsId());
+        //}
+        return "redirect:/";
     }
 }
