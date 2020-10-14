@@ -7,6 +7,7 @@ package zonedout.models;
 
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Lob;
@@ -27,8 +28,9 @@ import org.springframework.data.jpa.domain.AbstractPersistable;
 @Data
 public class ProfileImage extends AbstractPersistable<Long>{
     
-    @Lob
+    //@Lob
     @Basic(fetch = FetchType.EAGER)
+    @Column(name = "content", columnDefinition="clob")
     //@Type(type = "org.hibernate.type.ImageType")
     private byte[] content;
     
