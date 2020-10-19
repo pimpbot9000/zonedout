@@ -33,27 +33,36 @@
                     </li>
                     <li th:if="${userAccount != null}" class="nav-item">
                         <a class="nav-link" th:href="@{/logout}">Log out</a>
-                    </li>                       
+                    </li>
+                    <li th:if="${userAccount != null}" class="nav-item">
+                        <span class="navbar-text" th:text="${userAccount.firstname + ' ' + userAccount.lastname}">user's name</span>
+                    </li>                    
                 </ul>
             </div>
-            <form class="form-inline">
-                <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search"/>
-                <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+            <form method="GET" class="form-inline" th:action="@{/search}" id="search">                
+                <input class="form-control mr-sm-2" type="search" name="searchString" id="search_string" placeholder="Search" aria-label="Search"/>
+                <button class="btn btn-outline-warning my-2 my-sm-0" type="submit" id="search_button">Search</button>
             </form>
         </nav>
 
-        <header th:fragment="header">
-            <ul>
-                <li><a th:href="@{/items}">Items</a></li>
-                <li><a th:href="@{/cart}">Cart</a></li>
-                <li><a th:href="@{/orders}">Orders</a></li>
-            </ul>
-        </header>
 
         <th:block th:fragment="bootstrapscripts">
             <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
             <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
             <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script>
+
+            <script>
+                window.addEventListener("load",function() {
+                    document.getElementById('search').addEventListener("submit",function(e) {
+                        console.log(document.getElementById('search_string').value)
+                        
+                        if ( document.getElementById('search_string').value === "" ){
+                            e.preventDefault();                           
+                        }
+
+                    });
+                });
+            </script>
         </th:block>
     </body>
 </html>

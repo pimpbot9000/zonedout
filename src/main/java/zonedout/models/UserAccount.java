@@ -7,6 +7,7 @@ package zonedout.models;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -17,7 +18,9 @@ import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.springframework.data.jpa.domain.AbstractPersistable;
 
 /**
@@ -28,24 +31,30 @@ import org.springframework.data.jpa.domain.AbstractPersistable;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Data
+@Getter
+@Setter
 public class UserAccount extends AbstractPersistable<Long>{
     private String username;
     private String firstname;
     private String lastname;
     private String password;
-    
+    private String idString;
     private String bio;
     
-    @ElementCollection(fetch = FetchType.EAGER)
+    @ElementCollection(fetch = FetchType.LAZY)
     private List<String> authorities;    
     
-    @OneToOne    
+    @OneToOne(fetch = FetchType.LAZY)    
     private ProfileImage profileImage;
     
-    @ManyToMany    
-    private List<UserAccount> contacts = new ArrayList<>();   
+    @ManyToMany(fetch = FetchType.LAZY)    
+    private List<UserAccount> contacts = new ArrayList<>();
     
+    @ManyToMany(fetch = FetchType.LAZY) 
+    private List<UserAccount> sentInvites = new ArrayList<>();
     
+    @ManyToMany(fetch = FetchType.LAZY)
+    private List<UserAccount> receivedInvites = new ArrayList<>();    
+   
     
 }

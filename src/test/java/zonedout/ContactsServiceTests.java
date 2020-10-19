@@ -5,6 +5,9 @@
  */
 package zonedout;
 
+import java.util.List;
+import org.hibernate.Hibernate;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -17,40 +20,48 @@ import zonedout.repositories.UserAccountRepository;
 import zonedout.services.ContactsService;
 import zonedout.services.UserAccountService;
 import static org.junit.Assert.*;
-
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.transaction.annotation.Transactional;
+import zonedout.models.UserAccount;
 
 @ActiveProfiles("test")
 @RunWith(SpringRunner.class)
 @SpringBootTest
+@AutoConfigureMockMvc
 public class ContactsServiceTests {
 
     @Autowired
     private UserAccountService accountService;
-    
+
     @Autowired
-    private UserAccountRepository accountRepo; 
+    private UserAccountRepository accountRepo;
 
     @Autowired
     private ContactsService contactsService;
 
-    private static String username = "username10";
-    private static String password = "swordfish";
-    private static String firstname = "alice";
-    private static String lastname = "smith";
-
-    private static String other = "other";
-
+    private static final String username1 = "username10";
+    private static final String password1 = "swordfish";
+    private static final String firstname1 = "Alice";
+    private static final String lastname1 = "Smith";
+    private static final String idString1 = "username1";
+    
+    private static final String username2 = "username20";
+    private static final String password2 = "swordfish";
+    private static final String firstname2 = "Bob";
+    private static final String lastname2 = "Smith";
+    private static final String idString2 = "username2";
+    
+    private UserAccount account;
+    private UserAccount otherAccount;
+   
     @Before
     public void setUp() {
-
-        /*String username = "username10";
-        String password = "swordfish";
-        String firstname = "alice";
-        String lastname = "smith";
-
-        String other = "other";*/
-        accountService.createUser(username, password, firstname, lastname);
-        accountService.createUser(username + other, password + other, firstname + other, lastname + other);
+        accountService.createUser(username1, password1, firstname1, lastname1, idString1);
+        accountService.createUser(username2, password2, firstname2, lastname2, idString2);
+        account = accountService.getUserAccount(username1);
+        otherAccount = accountService.getUserAccount(username2);
+        contactsService.createContact(account.getId(), otherAccount.getId());
+        contactsService.sendInvite(account.getId(), otherAccount.getId());
     }
 
     @After
@@ -59,20 +70,35 @@ public class ContactsServiceTests {
     }
 
     @Test
-    public void sendInvite() {
-        
+    @Transactional
+    public void createContact() {
+
         // initial test that test database holds user
-        assertEquals(username, accountService.getUserAccount(username).getUsername());
-        
+        //UserAccount 
+        assertEquals(username1, account.getUsername());
         // initial test that test database holds other user
-        assertEquals(username + other, accountService.getUserAccount(username + other).getUsername());
+        //UserAccount otherAccount = accountService.getUserAccount(username2);
+        assertEquals(username2, otherAccount.getUsername());
         
-        // send invite using service
-        //contactsService.sendInvite(username, username + other);
+        // create contact
         
-        //System.out.println("          ****** RECEIVED INVITES" + accountService.getUserAccount(username).getInvites().size());
-        //assertEquals(username + other, accountService.getUserAccount(username).getInvites().get(0).getUsername());
         
+        // test contacts
+        assertEquals(1, accountService.getUserAccount(username1).getContacts().size());
+        assertEquals(1, accountService.getUserAccount(username2).getContacts().size());
+    }
+    
+    @Test
+    @Transactional
+    public void sendInvite(){
+        
+        UserAccount inviterAccount = accountService.getUserAccount(username1);
+        UserAccount inviteeAccount = accountService.getUserAccount(username2);
+        
+        
+        
+        List<UserAccount> sentInvites = inviterAccount.getSentInvites();
+        assertEquals(1, sentInvites.size());
         
     }
 }

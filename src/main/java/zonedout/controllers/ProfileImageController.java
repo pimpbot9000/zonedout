@@ -6,16 +6,10 @@
 package zonedout.controllers;
 
 import java.io.IOException;
-import java.util.List;
-import javax.transaction.Transactional;
+import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -27,6 +21,7 @@ import zonedout.models.UserAccount;
 import zonedout.repositories.ProfileImageRepository;
 import zonedout.repositories.UserAccountRepository;
 import zonedout.services.UserAccountService;
+
 
 /**
  *
@@ -45,44 +40,38 @@ public class ProfileImageController {
 
     @Autowired
     private ProfileImageRepository profileImageRepo;
-
-    /*@GetMapping("/files")
-    public String files(Model model) {
-
-        List<FileObject> files = fileRepository.findAll();
-        model.addAttribute("files", files);
-
-        return "files";
-    }*/
-
- /*@GetMapping("/files/{id}")
-    public ResponseEntity<byte[]> viewFile(@PathVariable Long id) {
-        FileObject fo = fileRepository.getOne(id);
-
-        final HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.parseMediaType(fo.getContentType()));
-        headers.setContentLength(fo.getContentLength());
-        headers.add("Content-Disposition", "attachment; filename=" + fo.getName());
-
-        return new ResponseEntity<>(fo.getContent(), headers, HttpStatus.CREATED);
-    }*/
-    
-    
     
     /**
-     * Any authenticated user has acces to images, but that's ok
-     *
-     * @param username
-     * @return
+     * Any authenticated user has access to images, but that's ok.
      */
-    //@Transactional
     @GetMapping(path = "/profileimages/{username}/content", produces = "image/png")
     @ResponseBody
-    
-    public byte[] get(@PathVariable String username) {
+    public byte[] getStoredImage(@PathVariable String username) {
         return userAccountService.getUserAccount(username).getProfileImage().getContent();
     }
-    //@Transactional
+
+    @GetMapping("/profileimages/{username}")
+    public String getImage(@PathVariable String username) {
+
+        UserAccount account = userAccountRepo.findByUsername(username);
+
+        if (account.getProfileImage() == null) {
+            return "redirect:/static/images/default-user-image.png";
+        } else {
+            return "redirect:/profileimages/" + username + "/content";
+        }
+    }
+
+    @GetMapping(path = "/images/{profileImageId}", produces = "image/png")
+    @ResponseBody
+    public byte[] getImageById(@PathVariable Long profileImageId) {
+
+        Optional<ProfileImage> image = profileImageRepo.findById(profileImageId);
+
+        return image.isPresent() ? image.get().getContent() : null;
+        
+    }
+
     @PostMapping("/profileimages")
     public String save(@RequestParam("file") MultipartFile file, Authentication authentication) throws IOException {
 
@@ -104,5 +93,4 @@ public class ProfileImageController {
 
         return "redirect:/myprofile";
     }
-
 }

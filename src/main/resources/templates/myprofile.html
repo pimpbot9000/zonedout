@@ -12,7 +12,7 @@
             <h2><span th:text="${userAccount.firstname}">Firstname</span> <span th:text="${userAccount.lastname}">Firstname</span></h2>
             
             <p>
-                <img th:if="${userAccount.profileImage}" th:src="@{/profileimages/{username}/content(username=${userAccount.username})}" class="img-thumbnail" style="max-height: 300px;"/>                
+                <img th:if="${userAccount.profileImage}" th:src="@{/profileimages/{username}(username=${userAccount.username})}" class="img-thumbnail" style="max-height: 300px;"/>                
             </p>
 
             <h4>Set profile image</h4>

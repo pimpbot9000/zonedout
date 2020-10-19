@@ -26,14 +26,19 @@ public class SignInController {
             Model model) {
 
         if (error != null && error.equals("userexists")) {
+
+            model.addAttribute("errorMessage", "Username \"" + username + "\" already exists");
+
+        } else if (error != null && error.equals("idexists")) {
             
-            model.addAttribute("errorMessage", "Username \""+ username +"\" already exists");            
-            
-        } else if (error != null && error.equals("passwordmismatch"))  {
-            
-            model.addAttribute("errorMessage", "Passwords did not match");
+            model.addAttribute("errorMessage", "Identifier string must be unique");
             model.addAttribute("username", username);
             
+        } else if (error != null && error.equals("passwordmismatch")) {
+
+            model.addAttribute("errorMessage", "Passwords did not match");
+            model.addAttribute("username", username);
+
         }
 
         return "signin";
@@ -45,17 +50,22 @@ public class SignInController {
             @RequestParam String firstname,
             @RequestParam String lastname,
             @RequestParam String password1,
-            @RequestParam String password2) {
-
-        if (!password1.equals(password2)) {
-            return "redirect:/signin?error=passwordmismatch&username=" + username;
-        }
+            @RequestParam String password2,
+            @RequestParam String idString) {
 
         if (userAccountService.userExists(username)) {
             return "redirect:/signin?error=userexists&username=" + username;
         }
 
-        UserAccount u = userAccountService.createUser(username, password1, firstname, lastname);
+        if (userAccountService.idStringExists(idString)) {
+            return "redirect:/signin?error=idexists&username=" + username;
+        }
+
+        if (!password1.equals(password2)) {
+            return "redirect:/signin?error=passwordmismatch&username=" + username;
+        }
+
+        UserAccount u = userAccountService.createUser(username, password1, firstname, lastname, idString);
 
         return "redirect:/";
     }

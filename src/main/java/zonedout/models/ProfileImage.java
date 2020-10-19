@@ -26,17 +26,15 @@ import org.springframework.data.jpa.domain.AbstractPersistable;
 @NoArgsConstructor
 @Entity
 @Data
-public class ProfileImage extends AbstractPersistable<Long>{
+public class ProfileImage extends AbstractPersistable<Long>{    
     
     @Lob
     @Basic(fetch = FetchType.LAZY)
-    //@Column(name = "content", columnDefinition="clob")
-    
-    @Type(type = "org.hibernate.type.BinaryType")
-    
+    //@Type(type = "org.hibernate.type.BinaryType") <-- for production!
     private byte[] content;
     
     @OneToOne(mappedBy = "profileImage")
     private UserAccount userAccount;
     
 }
+

@@ -31,19 +31,8 @@ public class MyProfileController {
         
         UserAccount account = userAccountService.getUserAccount(auth.getName());
         
-        /*
-        List<UserAccount> contacts = account.getContacts();
-        contacts.add(contacts.get(0));
-        contacts.add(contacts.get(0));
-        contacts.add(contacts.get(0));
-        contacts.add(contacts.get(0));
-        contacts.add(contacts.get(0));
-        contacts.add(contacts.get(0));
-        account.setContacts(contacts);*/
-        
         model.addAttribute("userAccount", account);
-        return "home";
-        
+        return "home";        
     }
     
     @GetMapping("/myprofile")

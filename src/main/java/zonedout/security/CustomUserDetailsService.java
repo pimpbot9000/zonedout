@@ -13,6 +13,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetailsService.*;
 import org.springframework.security.core.userdetails.*;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import zonedout.models.UserAccount;
 import zonedout.repositories.UserAccountRepository;
 
@@ -27,6 +28,7 @@ public class CustomUserDetailsService implements UserDetailsService {
     private UserAccountRepository accountRepository;
 
     @Override
+    @Transactional
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         UserAccount account = accountRepository.findByUsername(username);
         if (account == null) {
