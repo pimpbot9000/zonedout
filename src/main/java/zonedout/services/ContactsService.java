@@ -140,7 +140,7 @@ public class ContactsService {
         UserAccount account = userAccountRepo.findByUsername(username);
         Optional<UserAccount> contactAccount = userAccountRepo.findById(contactId);
 
-        if (account == null || contactAccount.isEmpty()) {
+        if (account == null || !contactAccount.isPresent()) {
             return;
         }
 
