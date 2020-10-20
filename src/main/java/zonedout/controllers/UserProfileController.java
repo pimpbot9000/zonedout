@@ -21,7 +21,7 @@ import zonedout.services.UserAccountService;
  * @author tvali
  */
 @Controller
-public class MyProfileController {
+public class UserProfileController {
     
     @Autowired
     private UserAccountService userAccountService;

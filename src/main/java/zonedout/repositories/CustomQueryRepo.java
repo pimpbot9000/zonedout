@@ -17,7 +17,7 @@ import zonedout.models.UserAccount;
  *
  * @author tvali
  */
-@Component
+
 public interface CustomQueryRepo extends JpaRepository <UserAccount, Long>{
     
     @Query(value = "SELECT ID AS id, USERNAME as username, CONTACTS_ID as contactsId "

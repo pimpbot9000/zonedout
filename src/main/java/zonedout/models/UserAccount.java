@@ -56,5 +56,7 @@ public class UserAccount extends AbstractPersistable<Long>{
     @ManyToMany(fetch = FetchType.LAZY)
     private List<UserAccount> receivedInvites = new ArrayList<>();    
    
+    @OneToMany(mappedBy = "author")
+    private List<Post> posts = new ArrayList<>();
     
 }

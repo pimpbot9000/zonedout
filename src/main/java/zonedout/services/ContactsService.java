@@ -15,7 +15,7 @@ import zonedout.models.UserAccount;
 import zonedout.repositories.UserAccountRepository;
 
 /**
- *
+ * Class violates DRY principle, but..
  * @author tvali
  */
 @Service
@@ -64,6 +64,11 @@ public class ContactsService {
         
     }
     
+    /**
+     * Remove a contact relation between user and contact.
+     * @param username
+     * @param contactId 
+     */
     @Transactional
     public void removeContact(String username, Long contactId){
         
@@ -79,7 +84,65 @@ public class ContactsService {
         
     }
     
-     
+    /**
+     * Remove an invite the user has sent.
+     * @param username
+     * @param contactId 
+     */
+    @Transactional
+    public void cancelPendingInvite(String username, Long contactId){
+        
+        UserAccount account = userAccountRepo.findByUsername(username);
+        Optional<UserAccount> contactAccount = userAccountRepo.findById(contactId);
+        
+        if(account == null || contactAccount.isEmpty()){
+            return;
+        }
+        
+        account.getSentInvites().remove(contactAccount.get());
+        contactAccount.get().getReceivedInvites().remove(account);
+        
+    }
+    
+    @Transactional
+    public int acceptPendingApproval(String username, Long contactId){
+        
+        UserAccount account = userAccountRepo.findByUsername(username);
+        Optional<UserAccount> contactAccount = userAccountRepo.findById(contactId);
+        
+        if(account == null || contactAccount.isEmpty()){
+            return DOES_NOT_EXIST;
+        }
+        
+        // if invite still exists        
+        if( contactAccount.get().getSentInvites().contains(account) ){
+           
+            account.getReceivedInvites().remove(contactAccount.get());
+            contactAccount.get().getSentInvites().remove(account);
+            
+            this.createContact(account.getId(), contactId);
+            
+            return SUCCESS;
+            
+        }
+        
+        return DOES_NOT_EXIST;
+        
+    }    
+    
+    @Transactional
+    public void rejectPendingApproval(String username, Long contactId){
+        
+        UserAccount account = userAccountRepo.findByUsername(username);
+        Optional<UserAccount> contactAccount = userAccountRepo.findById(contactId);
+        
+        if(account == null || contactAccount.isEmpty()){
+            return;
+        }
+        
+        account.getReceivedInvites().remove(contactAccount.get());
+        contactAccount.get().getSentInvites().remove(account);        
+    }     
     
     @Transactional
     public void sendInvite(Long inviterId, Long inviteeId){
@@ -90,4 +153,8 @@ public class ContactsService {
         inviteeAccount.getReceivedInvites().add(inviterAccount);        
         
     }
+    
+    public static int DOES_NOT_EXIST = -1;
+    public static int SUCCESS = 1;
+    
 }

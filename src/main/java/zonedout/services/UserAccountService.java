@@ -86,8 +86,7 @@ public class UserAccountService {
         u.setFirstname(firstname);
         u.setLastname(lastname);
         u.setIdString(idString);
-        u.setAuthorities(Arrays.asList("USER"));
-       
+        u.setAuthorities(Arrays.asList("USER"));       
         
         userAccountRepo.save(u);
         return getUserAccount(username);
