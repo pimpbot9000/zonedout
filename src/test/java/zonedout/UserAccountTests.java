@@ -63,7 +63,7 @@ public class UserAccountTests {
         String idString = "username1";
                 
         
-        UserAccount account = userAccountService.createUser(username, password, firstname, lastname, idString1);
+        UserAccount account = userAccountService.createUser(username, password, firstname, lastname, idString);
         
         // test the useraccount returned by service
         assertEquals(username, account.getUsername());
