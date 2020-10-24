@@ -1,9 +1,12 @@
 package zonedout.controllers;
 
+import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import zonedout.models.UserAccount;
@@ -23,51 +26,56 @@ public class SignInController {
     public String signIn(
             @RequestParam(required = false) String error,
             @RequestParam(required = false) String username,
+            @ModelAttribute UserAccount userAccount,
             Model model) {
-
-        if (error != null && error.equals("userexists")) {
-
-            model.addAttribute("errorMessage", "Username \"" + username + "\" already exists");
-
-        } else if (error != null && error.equals("idexists")) {
-            
-            model.addAttribute("errorMessage", "Identifier string must be unique");
-            model.addAttribute("username", username);
-            
-        } else if (error != null && error.equals("passwordmismatch")) {
-
-            model.addAttribute("errorMessage", "Passwords did not match");
-            model.addAttribute("username", username);
-
-        }
 
         return "signin";
     }
 
     @PostMapping("/signin")
     public String addAccount(
-            @RequestParam String username,
-            @RequestParam String firstname,
-            @RequestParam String lastname,
-            @RequestParam String password1,
-            @RequestParam String password2,
-            @RequestParam String idString) {
+            @Valid @ModelAttribute UserAccount account, BindingResult bindingResult, Model model,
+            @RequestParam String password2
+    ) {
 
-        if (userAccountService.userExists(username)) {
-            return "redirect:/signin?error=userexists&username=" + username;
+        boolean error = false;
+
+        if (bindingResult.hasErrors()) {
+            error = true;
         }
 
-        if (userAccountService.idStringExists(idString)) {
-            return "redirect:/signin?error=idexists&username=" + username;
+        if (userAccountService.userExists(account.getUsername())) {
+            model.addAttribute("userExists", "true");
+            error = true;
         }
 
-        if (!password1.equals(password2)) {
-            return "redirect:/signin?error=passwordmismatch&username=" + username;
+        if (userAccountService.idStringExists(account.getIdString())) {
+            model.addAttribute("idStringExists", "true");
+            error = true;
         }
 
-        UserAccount u = userAccountService.createUser(username, password1, firstname, lastname, idString);
+        if (!account.getPassword().equals(password2)) {
+            model.addAttribute("passwordMismatch", "true");
+            error = true;
+        }
 
-        return "redirect:/";
+        if (account.getPassword().length() < 5 && account.getPassword().length() != 0 ) { // note != 0 because this error case in handled by ModelAttribute validator
+            model.addAttribute("passwordTooShort", "true");
+            error = true;
+        }
+
+        if (error) {
+            return "signin";
+        }
+
+        userAccountService.createUser(
+                account.getUsername(),
+                account.getPassword(),
+                account.getFirstname(),
+                account.getLastname(),
+                account.getIdString());
+
+        return "redirect:/?signinsuccess=true";
     }
 
 }

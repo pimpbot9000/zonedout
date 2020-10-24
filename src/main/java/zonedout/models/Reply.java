@@ -6,12 +6,9 @@
 package zonedout.models;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import lombok.Data;
+import javax.persistence.OneToOne;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.jpa.domain.AbstractPersistable;
@@ -23,16 +20,13 @@ import org.springframework.data.jpa.domain.AbstractPersistable;
 @Entity
 @Getter
 @Setter
-public class Post extends AbstractPersistable<Long> {
-
-    private LocalDateTime dateTime;
-    
+public class Reply extends AbstractPersistable<Long>{
+    private LocalDateTime dateTime;    
     private String content;
-
+    
     @ManyToOne
     private UserAccount author;
     
-    @OneToMany(mappedBy="post")
-    private List<Reply> replies = new ArrayList<>();
-    
+    @ManyToOne
+    private Post post;
 }

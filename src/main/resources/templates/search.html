@@ -12,10 +12,8 @@
                 <div class="col-xs-12 col-sm-6 col-md-4" th:each="account : ${accounts}">
                     <div class="card">
                         <div class="card-body text-center">
-                            <p><img class="img-fluid" th:src="@{/profileimages/{username}(username=${account.username})}" alt="card image" style="max-height: 200px;"/></p>
-                            
-                            <a th:href="@{/profiles/{idString}(idString=${account.idString})}"<span th:text="${account.firstname}"></span> <span th:text="${account.lastname}"></span></a>
-                            
+                            <p><img class="img-fluid" th:src="@{/profileimages/{username}(username=${account.username})}" alt="card image" style="max-height: 200px;"/></p>                            
+                            <h4 class="card-title"><a th:href="@{/profiles/{idString}(idString=${account.idString})}"> <span th:text="${account.firstname}"></span> <span th:text="${account.lastname}"></span></a></h4>                          
                         </div>
                     </div>
                 </div>

@@ -7,6 +7,8 @@ package zonedout.services;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -26,7 +28,6 @@ public class ContactsService {
     private UserAccountRepository userAccountRepo;
 
     @Transactional
-    //@SuppressWarnings({"unchecked", "unsafe"})
     public void createContact(Long id, Long otherId) {
 
         Optional<UserAccount> account = (Optional<UserAccount>) userAccountRepo.findById(id);
@@ -65,9 +66,19 @@ public class ContactsService {
         contactAccount.get().getContacts().remove(account.get());
 
     }
+    
+    public List<UserAccount> getContactsOfUser(UserAccount user) {
+        // this should be done probably with DB query, but meh.
+        return user.getContacts();
+    }
+
+    public List<UserAccount> getContactsOfUserWithFilter(UserAccount user, UserAccount filterUserOut) {
+        // this should be done probably with DB query, but meh.
+        return user.getContacts().stream().filter((UserAccount u) -> u.getId() != filterUserOut.getId()).collect(Collectors.toList());
+    }
 
     /**
-     * Remove a contact relation between user and contact.
+     * Remove a contact relation between user and contact (bidirectional).
      *
      * @param username
      * @param contactId
@@ -81,7 +92,7 @@ public class ContactsService {
         if (account == null || !contactAccount.isPresent()) {
             return;
         }
-        System.out.println("ContactsService remove");
+
         account.getContacts().remove(contactAccount.get());
         contactAccount.get().getContacts().remove(account);
 
@@ -149,16 +160,56 @@ public class ContactsService {
     }
 
     @Transactional
-    public void sendInvite(Long inviterId, Long inviteeId) {
-        UserAccount inviterAccount = userAccountRepo.getOne(inviterId);
-        UserAccount inviteeAccount = userAccountRepo.getOne(inviteeId);
+    public int sendInvite(String inviterUsername, Long inviteeId) {
 
-        inviterAccount.getSentInvites().add(inviteeAccount);
-        inviteeAccount.getReceivedInvites().add(inviterAccount);
+        UserAccount inviterAccount = userAccountRepo.findByUsername(inviterUsername);
+        Optional<UserAccount> inviteeAccount = userAccountRepo.findById(inviteeId);
 
+        if (inviterAccount == null || !inviteeAccount.isPresent()) {
+            return DOES_NOT_EXIST;
+
+        }
+
+        // is invite already sent?
+        if (inviterAccount.getSentInvites().contains(inviteeAccount.get())) {
+            return CANNOT_DO_THAT_SORRY;
+        }
+        
+        // has other user already invited this user
+        if (inviterAccount.getReceivedInvites().contains(inviteeAccount.get())) {
+            return CANNOT_DO_THAT_SORRY;
+        }
+
+        // are the users already "friends?"        
+        if (areFriends(inviterAccount, inviteeAccount.get())) {
+            return CANNOT_DO_THAT_SORRY;
+        }
+
+        inviterAccount.getSentInvites().add(inviteeAccount.get());
+        inviteeAccount.get().getReceivedInvites().add(inviterAccount);
+        return SUCCESS;
+
+    }
+
+    public boolean isUsersContact(UserAccount account, UserAccount otherAccount) {
+        return account.getContacts().contains(otherAccount);
+    }
+
+    public boolean hasUserInvited(UserAccount account, UserAccount otherAccount) {
+        return account.getSentInvites().contains(otherAccount);
+    }
+
+    public boolean hasUserReceivedInvite(UserAccount account, UserAccount otherAccount) {
+        return account.getReceivedInvites().contains(otherAccount);
+    }
+
+    // helper functions
+    private boolean areFriends(UserAccount user, UserAccount otherUser) {
+        return user.getContacts().contains(otherUser);
     }
 
     public static int DOES_NOT_EXIST = -1;
     public static int SUCCESS = 1;
+    public static int CANNOT_DO_THAT_SORRY = -2;
 
 }

@@ -25,8 +25,6 @@ import zonedout.repositories.UserAccountRepository;
 @Service
 public class UserAccountService {
 
-    //Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-    //String username = auth.getName();
     
     @Autowired
     private UserAccountRepository userAccountRepo;
@@ -44,32 +42,14 @@ public class UserAccountService {
     
     public UserAccount getUserAccountByIdString(String idString) {
         return userAccountRepo.findByIdString(idString);
-    }
-    
-    /*
-    @Transactional
-    public List<UserAccount> getContacts(String username){
-        UserAccount account = userAccountRepo.findByUsername(username);
-        return account.getContacts();
-    }
-    
-    @Transactional
-    public List<UserAccount> getSentInvites(String username){
-        UserAccount account = userAccountRepo.findByUsername(username);
-        return account.getSentInvites();
-    }
-    
-    @Transactional
-    public List<UserAccount> getReceivedInvites(String username){
-        UserAccount account = userAccountRepo.findByUsername(username);
-        return account.getReceivedInvites();
-    }*/
+    }   
 
     public boolean userExists(String username) {
 
         return userAccountRepo.findByUsername(username) != null;
 
     }
+    
     /**
      * Create a regular user with granted authority USER 
      */
@@ -98,5 +78,6 @@ public class UserAccountService {
         u.setBio(bio);
         userAccountRepo.save(u);        
     }   
-       
+    
+    
 }

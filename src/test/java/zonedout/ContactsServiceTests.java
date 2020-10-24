@@ -39,66 +39,88 @@ public class ContactsServiceTests {
     @Autowired
     private ContactsService contactsService;
 
-    private static final String username1 = "username10";
+    private static final String username1 = "username1";
     private static final String password1 = "swordfish";
     private static final String firstname1 = "Alice";
     private static final String lastname1 = "Smith";
     private static final String idString1 = "username1";
     
-    private static final String username2 = "username20";
+    private static final String username2 = "username2";
     private static final String password2 = "swordfish";
     private static final String firstname2 = "Bob";
     private static final String lastname2 = "Smith";
     private static final String idString2 = "username2";
     
+    private static final String username3 = "username3";
+    private static final String password3 = "swordfish3";
+    private static final String firstname3 = "Bob3";
+    private static final String lastname3= "Smith3";
+    private static final String idString3 = "username3";
+    
     private UserAccount account;
     private UserAccount otherAccount;
+    private UserAccount thirdAccount;
    
     @Before
-    public void setUp() {
+    public void before() {
         accountService.createUser(username1, password1, firstname1, lastname1, idString1);
         accountService.createUser(username2, password2, firstname2, lastname2, idString2);
+        accountService.createUser(username3, password3, firstname3, lastname3, idString3);
+        
         account = accountService.getUserAccount(username1);
         otherAccount = accountService.getUserAccount(username2);
-        contactsService.createContact(account.getId(), otherAccount.getId());
-        contactsService.sendInvite(account.getId(), otherAccount.getId());
+        thirdAccount = accountService.getUserAccount(username3);
+        
+        contactsService.sendInvite(account.getUsername(), otherAccount.getId());  // 1->2
+        contactsService.createContact(thirdAccount.getId(), otherAccount.getId()); // 3<->2
+        
+        accountRepo.flush();
+        
     }
 
     @After
-    public void tearDown() {
+    public void after() {
         accountRepo.deleteAll();
     }
 
     @Test
     @Transactional
-    public void createContact() {
+    public void contactExists() {
 
         // initial test that test database holds user
         //UserAccount 
         assertEquals(username1, account.getUsername());
-        // initial test that test database holds other user
-        //UserAccount otherAccount = accountService.getUserAccount(username2);
+        // initial test that test database holds other user        
         assertEquals(username2, otherAccount.getUsername());
         
-        // create contact
         
         
         // test contacts
-        assertEquals(1, accountService.getUserAccount(username1).getContacts().size());
+        assertEquals(1, accountService.getUserAccount(username3).getContacts().size());
         assertEquals(1, accountService.getUserAccount(username2).getContacts().size());
     }
     
     @Test
     @Transactional
-    public void sendInvite(){
+    public void inviteExist(){
         
         UserAccount inviterAccount = accountService.getUserAccount(username1);
-        UserAccount inviteeAccount = accountService.getUserAccount(username2);
+        UserAccount inviteeAccount = accountService.getUserAccount(username2);       
+        
+        // initial test that test database holds user
+        //UserAccount 
+        assertEquals(username1, account.getUsername());
+        // initial test that test database holds other user        
+        assertEquals(username2, otherAccount.getUsername());
         
         
         
         List<UserAccount> sentInvites = inviterAccount.getSentInvites();
+        List<UserAccount> receivedInvites = inviteeAccount.getReceivedInvites();
         assertEquals(1, sentInvites.size());
+        assertEquals(1, receivedInvites.size());
+        assertTrue(sentInvites.contains(inviteeAccount));
+        assertTrue(receivedInvites.contains(inviterAccount));
         
     }
 }

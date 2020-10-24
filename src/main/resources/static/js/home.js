@@ -1,6 +1,6 @@
 /**
 *   Handle deleting contacts, canceling invites, accepting invites and rejecting invites
-*   using ajax.
+*   using ajax in Home view.
 */
 
 $(function () {

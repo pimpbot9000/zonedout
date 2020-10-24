@@ -1,0 +1,3 @@
+2020-10-24 16:07:15 jdbc[4]: exception
+org.h2.jdbc.JdbcSQLException: Value too long for column "CONTENT VARCHAR(255)": "STRINGDECODE('If I do not sound like a typical Washington politician, it\u2019s because I\u2019m NOT a politician. If I do not a... (270)"; SQL statement:
+insert into post (author_id, content, date_time, id) values (?, ?, ?, ?) [22001-197]

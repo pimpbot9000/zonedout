@@ -5,18 +5,15 @@
  */
 package zonedout.repositories;
 
-import java.util.List;
-import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
-import zonedout.models.Post;
+import zonedout.models.Reply;
+
 
 /**
  *
  * @author tvali
  */
-public interface PostRepository extends JpaRepository <Post, Long>{
-    @EntityGraph(attributePaths = {"author", "replies"})
-    List<Post> findAll();
+public interface ReplyRepository extends JpaRepository <Reply, Long>{
+    
 }
-
 

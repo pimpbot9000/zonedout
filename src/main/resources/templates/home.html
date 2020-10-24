@@ -48,10 +48,8 @@
 
                                     <p><img class="img-fluid" th:src="@{/profileimages/{username}(username=${contact.username})}"
                                             alt="card image" style="max-height: 200px;" /></p>
-                                    <h4 class="card-title"><span th:text="${contact.firstname}"></span> <span
-                                            th:text="${contact.lastname}"></span></h4>
-                                    <p class="card-text" th:text="${contact.bio}">This is basic card with image on top, title,
-                                        description and button.</p>
+                                   
+                                    <h4 class="card-title"><a th:href="@{/profiles/{idString}(idString=${contact.idString})}"> <span th:text="${contact.firstname}"></span> <span th:text="${contact.lastname}"></span></a></h4>
 
                                     <form class="removeContactForm" th:action="@{/contacts/{contactId}(contactId=${contact.id})}">
                                         <input type="hidden" name="redirect" value="home" />
@@ -70,13 +68,10 @@
 
                                     <p><img class="img-fluid" th:src="@{/profileimages/{username}(username=${contact.username})}"
                                             alt="card image" style="max-height: 200px;" /></p>
-                                    <h4 class="card-title"><span th:text="${contact.firstname}"></span> <span
-                                            th:text="${contact.lastname}"></span></h4>
-                                    <p class="card-text" th:text="${contact.bio}">This is basic card with image on top, title,
-                                        description and button.</p>
-
+                                    <h4 class="card-title"><a th:href="@{/profiles/{idString}(idString=${contact.idString})}"> <span th:text="${contact.firstname}"></span> <span th:text="${contact.lastname}"></span></a></h4>
+                                   
                                     <form class="removeContactForm" th:action="@{/contacts/{contactId}(contactId=${contact.id})}">
-                                        <input type="hidden" name="redirect" value="home" />
+                                        
                                         <button type="submit" class="btn btn-outline-danger">remove contact</button>
                                     </form>
 
@@ -94,14 +89,12 @@
                                 <div class="card-body text-center">
                                     <p><img class="img-fluid" th:src="@{/profileimages/{username}(username=${contact.username})}"
                                             alt="card image" style="max-height: 200px;" /></p>
-                                    <h4 class="card-title"><span th:text="${contact.firstname}"></span> <span
-                                            th:text="${contact.lastname}"></span></h4>
-                                    <p class="card-text" th:text="${contact.bio}">This is basic card with image on top, title,
-                                        description and button.</p>
+                                    <h4 class="card-title"><a th:href="@{/profiles/{idString}(idString=${contact.idString})}"> <span th:text="${contact.firstname}"></span> <span th:text="${contact.lastname}"></span></a></h4>
+                                    
 
                                     <form class="cancelPendingInviteForm"
                                           th:action="@{/contacts/pendingInvites/{contactId}(contactId=${contact.id})}">
-                                        <input type="hidden" name="redirect" value="home" />
+                                        
                                         <button type="submit" class="btn btn-outline-danger">cancel invite</button>
                                     </form>
 
@@ -119,20 +112,18 @@
                                 <div class="card-body text-center">
                                     <p><img class="img-fluid" th:src="@{/profileimages/{username}(username=${contact.username})}"
                                             alt="card image" style="max-height: 200px;" /></p>
-                                    <h4 class="card-title"><span th:text="${contact.firstname}"></span> <span
-                                            th:text="${contact.lastname}"></span></h4>
-                                    <p class="card-text" th:text="${contact.bio}">This is basic card with image on top, title,
-                                        description and button.</p>
+                                    <h4 class="card-title"><a th:href="@{/profiles/{idString}(idString=${contact.idString})}"> <span th:text="${contact.firstname}"></span> <span th:text="${contact.lastname}"></span></a></h4>
+                                    
 
                                     <form class="acceptPendingApprovalForm"
                                           th:action="@{/contacts/pendingApprovals/{contactId}(contactId=${contact.id})}">
-                                        <input type="hidden" name="redirect" value="home" />
+                                        
                                         <button type="submit" class="btn btn-primary">accept invite</button>
                                     </form>
                                     <br/>
                                     <form class="dismissPendingApprovalForm"
                                           th:action="@{/contacts/pendingApprovals/{contactId}(contactId=${contact.id})}">
-                                        <input type="hidden" name="redirect" value="home" />
+                                        
                                         <button type="submit" class="btn btn-outline-danger">reject invite</button>
                                     </form>
 

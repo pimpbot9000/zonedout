@@ -8,6 +8,7 @@ package zonedout.models;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -16,6 +17,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.MapsId;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
@@ -34,11 +37,28 @@ import org.springframework.data.jpa.domain.AbstractPersistable;
 @Getter
 @Setter
 public class UserAccount extends AbstractPersistable<Long>{
-    private String username;
+    
+    @NotEmpty
+    @Size(min = 2, max = 20)    
     private String firstname;
+    
+    @NotEmpty
+    @Size(min = 2, max = 20)
     private String lastname;
+    
+    @NotEmpty    
     private String password;
+    
+    @NotEmpty
+    @Size(min = 2, max = 20)
+    @Column(unique = true)
     private String idString;
+    
+    @NotEmpty
+    @Size(min = 2, max = 20)
+    @Column(unique = true)
+    private String username;
+    
     private String bio;
     
     @ElementCollection(fetch = FetchType.LAZY)
@@ -58,5 +78,14 @@ public class UserAccount extends AbstractPersistable<Long>{
    
     @OneToMany(mappedBy = "author")
     private List<Post> posts = new ArrayList<>();
+    
+    @OneToMany(mappedBy = "author")
+    private List<Reply> replies = new ArrayList<>();
+
+    @Override
+    public String toString() {
+        return "UserAccount{" + "firstname=" + firstname + ", lastname=" + lastname + ", password=" + password + ", idString=" + idString + ", username=" + username + '}';
+    }   
+    
     
 }

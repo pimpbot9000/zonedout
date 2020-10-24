@@ -11,6 +11,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import zonedout.models.UserAccount;
 import zonedout.repositories.UserAccountRepository;
 import zonedout.services.UserAccountService;
@@ -20,34 +21,21 @@ import zonedout.services.UserAccountService;
  * @author tvali
  */
 @Controller
-public class DefaultController {
-    
-    @Autowired
-    private UserAccountService userAccountService;
-    
-    @Autowired
-    private Environment env;
-    
+public class DefaultController {    
+        
     @GetMapping("/")
-    public String root(Model model, Authentication authentication){
+    public String root(Model model, Authentication authentication, @RequestParam(required = false) Boolean signinsuccess){
         
         if(authentication != null && authentication.isAuthenticated()){
             return "redirect:/home";
+        }      
+        
+        if(signinsuccess != null && signinsuccess == true){
+            model.addAttribute("signin", true);
         }
         
-        //UserAccount userAcc = userAccountService.getUserAccount(authentication.getName());       
-        
-        //model.addAttribute("userAccount", userAcc);
-        
-        printActiveProfiles();
         return "frontpage";
         
-    }
-    
-    private void printActiveProfiles(){
-        for ( String profileName : env.getActiveProfiles()){
-            System.out.println("Currently active profile - " + profileName);
-        }
-    }
+    }  
     
 }

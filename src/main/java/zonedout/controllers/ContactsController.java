@@ -20,14 +20,29 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import zonedout.services.ContactsService;
 
 /**
- * RESTful-ish controller for handling contacts 
- * dynamically in user's Home view  
+ * RESTful-ish controller for handling contacts dynamically.
+ * Is not totally fool proof, and not consistent but what can you do. 
  */
 @Controller
 public class ContactsController {
 
     @Autowired
     private ContactsService contactsService;
+
+    @PostMapping(path = "/contacts/pendingInvites/{contactId}", produces  = MediaType.APPLICATION_JSON_VALUE)    
+    public ResponseEntity<?> sendInvite(Authentication auth, @PathVariable Long contactId) {
+        
+        int res = contactsService.sendInvite(auth.getName(), contactId);
+        
+        ResultBuilder builder =  new ResultBuilder().put("id", contactId);
+        
+        if(res == ContactsService.SUCCESS){
+            return builder.put("message", "invite sent").status(HttpStatus.OK).build();
+        } else {
+            return builder.put("message", "error").status(HttpStatus.BAD_REQUEST).build();
+        }
+        
+    }    
 
     @DeleteMapping(path = "/contacts/{contactId}", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
@@ -37,7 +52,7 @@ public class ContactsController {
             @RequestParam(required = false) String redirect
     ) {
         contactsService.removeContact(auth.getName(), contactId);
-       
+
         HashMap<String, Object> result = new HashMap<>();
         result.put("id", contactId);
         result.put("message", "removed successfully");
@@ -52,71 +67,71 @@ public class ContactsController {
             @PathVariable Long contactId,
             @RequestParam(required = false) String redirect
     ) {
-        contactsService.cancelPendingInvite(auth.getName(), contactId);        
-        
+        contactsService.cancelPendingInvite(auth.getName(), contactId);
+
         return new ResultBuilder()
                 .put("id", contactId)
                 .put("message", "invite cancelled")
                 .status(HttpStatus.OK)
                 .build();
     }
-    
+
     @PostMapping(path = "/contacts/pendingApprovals/{contactId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<HashMap<String, Object>> acceptPendingApproval(
             Authentication auth,
             @PathVariable Long contactId,
             @RequestParam(required = false) String redirect
     ) {
-        int res = contactsService.acceptPendingApproval(auth.getName(), contactId);        
-        
+        int res = contactsService.acceptPendingApproval(auth.getName(), contactId);
+
         HashMap<String, Object> result = new HashMap<>();
         result.put("id", contactId);
-        
-        if(res == ContactsService.SUCCESS){            
+
+        if (res == ContactsService.SUCCESS) {
             return new ResponseEntity<HashMap<String, Object>>(result, HttpStatus.OK);
-        } else {            
+        } else {
             return new ResponseEntity<HashMap<String, Object>>(result, HttpStatus.GONE);
         }
-        
+
     }
-    
-    @DeleteMapping(path = "/contacts/pendingApprovals/{contactId}", produces = MediaType.APPLICATION_JSON_VALUE)    
+
+    @DeleteMapping(path = "/contacts/pendingApprovals/{contactId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> rejectPendingApproval(
             Authentication auth,
             @PathVariable Long contactId,
             @RequestParam(required = false) String redirect
     ) {
-        contactsService.rejectPendingApproval(auth.getName(), contactId);        
-                
+        contactsService.rejectPendingApproval(auth.getName(), contactId);
+
         return new ResultBuilder()
                 .put("id", contactId)
                 .put("message", "invite rejected")
                 .status(HttpStatus.OK)
                 .build();
-        
+
     }
-    
-    
-    private class ResultBuilder{
+
+    private class ResultBuilder {
+
         private HashMap res;
         private HttpStatus status;
-        
-        public ResultBuilder(){
+
+        public ResultBuilder() {
             res = new HashMap<String, Object>();
             status = HttpStatus.OK;
         }
-        
-        public ResultBuilder put(String key, Object value){
+
+        public ResultBuilder put(String key, Object value) {
             res.put(key, value);
             return this;
         }
-        
-        public ResultBuilder status(HttpStatus status){
+
+        public ResultBuilder status(HttpStatus status) {
             this.status = status;
             return this;
         }
-        
-        public ResponseEntity<HashMap<String, Object>> build(){
+
+        public ResponseEntity<HashMap<String, Object>> build() {
             return new ResponseEntity<HashMap<String, Object>>(res, status);
         }
     }
