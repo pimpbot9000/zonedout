@@ -32,6 +32,7 @@
                     <div class="col-8 col-sm-10 col-md-10">
                         <span><b th:text="${post.author.firstname + ' ' + post.author.lastname}">Adkfjhsd</b></span><br/>
                         <a th:href="@{/profiles/{username}(username=${post.author.idString})}"><span th:text="${ '@' + post.author.idString}"></span></a><br/>
+                        <span th:text="${post.formattedDateTime}"></span><br/>
                         <span th:text="${post.content}">Content!</span>
                     </div>
                     <div class="col-12">                
@@ -53,8 +54,8 @@
                 </div>
             </div>
             <div class="container container-transparent" style="padding-right: 0; margin-top: -20px;">
-                <span><b>Replies</b></span>
-                <div class="container" style="padding-right: 0; margin-right: 0; margin-top: 0;" th:each="reply: ${post.replies}">                    
+                <span th:unless==${post.noReplies()}><b>Replies</b></span>
+                <div class="container" style="padding-right: 0; margin-right: 0; margin-top: 0;" th:each="reply: ${post.latestTenReplies}">                    
                     <div class="row">
                         <div class="col-4 col-sm-2 col-md-2">                        
                             <img class="img-fluid" th:src="@{/profileimages/{username}(username=${reply.author.username})}"/>
@@ -62,6 +63,7 @@
                         <div class="col-8 col-sm-10 col-md-10">
                             <span><b th:text="${reply.author.firstname + ' ' + reply.author.lastname}">Adkfjhsd</b></span><br/>
                             <a th:href="@{/profiles/{username}(username=${reply.author.idString})}"><span th:text="${ '@' + reply.author.idString}"></span></a><br/>
+                            <span th:text="${reply.formattedDateTime}"></span><br/>
                             <span th:text="${reply.content}">Content!</span>
                         </div>              
 

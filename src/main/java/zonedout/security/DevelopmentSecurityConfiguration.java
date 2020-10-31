@@ -16,41 +16,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 
-/**
- *
- * @author tvali
- */
-/*@Configuration
-@EnableWebSecurity
-public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
-
-    @Override
-    protected void configure(HttpSecurity http) throws Exception {
-        // Ei päästetä käyttäjää mihinkään sovelluksen resurssiin ilman
-        // kirjautumista. Tarjotaan kuitenkin lomake kirjautumiseen, mihin
-        // pääsee vapaasti. Tämän lisäksi uloskirjautumiseen tarjotaan
-        // mahdollisuus kaikille.
-        http.authorizeRequests()
-                .anyRequest().authenticated().and()
-                .formLogin().permitAll().and()
-                .logout().permitAll();
-    }
-
-    @Bean
-    @Override
-    public UserDetailsService userDetailsService() {
-        // withdefaultpasswordencoder on deprekoitu mutta toimii yhä
-        UserDetails user = User.withDefaultPasswordEncoder()
-                               .username("maxwell_smart")
-                               .password("kenkapuhelin")
-                               .authorities("USER")
-                               .build();
-        InMemoryUserDetailsManager manager = new InMemoryUserDetailsManager();
-        manager.createUser(user);
-        return manager;
-    }
-}*/
-
 @Profile("dev")
 @Configuration
 @EnableWebSecurity
@@ -70,23 +35,34 @@ public class DevelopmentSecurityConfiguration extends WebSecurityConfigurerAdapt
                 .antMatchers("/dev", "/dev/**").permitAll()
                 .antMatchers("/h2-console", "/h2-console/**").permitAll()
                 .antMatchers("/static", "/static/**").permitAll()
-                
-                .antMatchers("/signin","/signin/**").permitAll()
+                .antMatchers("/signin", "/signin/**").permitAll()
+                .antMatchers("/login", "/login/**").permitAll()
                 .antMatchers("/").permitAll()
-                .anyRequest().authenticated();
-        
-        http.formLogin().permitAll();
+                .anyRequest().authenticated()
+                .and()
+                .formLogin()
+                .loginPage("/login")
+                .permitAll()
+                //.loginProcessingUrl("/perform_login")
+                //.defaultSuccessUrl("/homepage.html", true)
+                .failureUrl("/login?error=true")
+                //.failureHandler(authenticationFailureHandler())
+                .and()
+                .logout();
+               
+
+        //http.formLogin().permitAll();
     }
 
     @Autowired
     public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
         auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
-       
+
     }
 
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
-    }   
-   
+    }
+
 }

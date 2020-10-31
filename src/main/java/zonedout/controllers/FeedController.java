@@ -7,6 +7,7 @@ package zonedout.controllers;
 
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -38,7 +39,7 @@ public class FeedController {
 
         UserAccount account = userAccountService.getUserAccount(auth.getName());
         
-        List<Post> posts = feedService.getPosts(account);        
+        Page<Post> posts = feedService.getLatestPosts(25);
         
         model.addAttribute("posts", posts);
         model.addAttribute("userAccount", account);

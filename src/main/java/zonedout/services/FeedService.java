@@ -6,12 +6,14 @@
 package zonedout.services;
 
 import java.time.LocalDateTime;
-import java.util.Date;
-import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import zonedout.models.Post;
@@ -34,9 +36,13 @@ public class FeedService {
     @Autowired
     private ReplyRepository replyRepository;
     
-    public List<Post> getPosts(UserAccount account){
-                
+    public List<Post> getPosts(UserAccount account){                
         return postRepository.findAll();
+    }
+    
+    public Page<Post> getLatestPosts(int pageSize){
+        Pageable pageable = PageRequest.of(0, pageSize, Sort.by("dateTime").descending());
+        return postRepository.findAll(pageable);        
     }
     
     public void addPost(UserAccount account, String content){        
